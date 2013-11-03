@@ -13,7 +13,7 @@ var qUnitScraper = {
         for( var moduleNumber=0; moduleNumber < numFailedModules; moduleNumber++ )
         {
             var thisModule = failedModules[moduleNumber];
-            failedMessages["module " + moduleNumber] = this._readTest( thisModule );
+            failedMessages["module " + this._getModuleNumber(jQuery(thisModule))] = this._readTest( thisModule );
         }
         
         return failedMessages;
@@ -34,5 +34,18 @@ var qUnitScraper = {
         }
         
         return failedMessages;
+    },
+    /**
+     * This one take a jQuery object of the module we want to find the number.
+     * Performs a regex match over the id of the DOM which includes an index at the very end.
+     * Lastly, we add 1 to the number since the ID is 0-indexed vs the list display to user is 1-indexed.
+     * 
+     * @params : (object) jQuery object of the module element
+     * @return : (int) module number as display to users
+     */
+    _getModuleNumber: function(module) {
+        var id = module.attr("id");
+        var match = id.match(/\d+$/)[0];
+        return parseInt( match ) + 1 ;
     }
 }
