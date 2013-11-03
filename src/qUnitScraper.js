@@ -23,14 +23,16 @@ var qUnitScraper = {
         var failedMessages = [];
 
         failedMessages["name"] = jQuery(".module-name", failedModule).html() + ": " + jQuery(".test-name", failedModule).html();
+        failedMessages["tests"] = [];
         
         var numFailedTests = failedTests.length;
         for( var testNumber=0; testNumber < numFailedTests; testNumber++ )
         {
             var thisTest = failedTests[testNumber];
-            failedMessages["test " + testNumber] = [];
-            failedMessages["test " + testNumber]["message"] = jQuery(".test-message", thisTest).html();
-            failedMessages["test " + testNumber]["source"]  = jQuery(".test-source pre", thisTest).html();
+            failedMessages["tests"].push({
+                "message": jQuery(".test-message", thisTest).html(),
+                "source" : jQuery(".test-source pre", thisTest).html()
+            });
         }
         
         return failedMessages;
