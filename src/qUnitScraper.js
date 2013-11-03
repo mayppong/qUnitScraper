@@ -2,10 +2,10 @@ var qUnitScraper = {
     init: function() {
         // validate page here
         
-        var failedMessages = this._readModule();
+        var failedMessages = this._readResults();
         console.log( failedMessages );
     },
-    _readModule: function( ) {
+    _readResults: function( ) {
         var failedModules = jQuery("#qunit-tests .fail[id^=qunit-test-output]");
         var failedMessages = [];
         
@@ -13,12 +13,12 @@ var qUnitScraper = {
         for( var moduleNumber=0; moduleNumber < numFailedModules; moduleNumber++ )
         {
             var thisModule = failedModules[moduleNumber];
-            failedMessages["module " + this._getModuleNumber(jQuery(thisModule))] = this._readTest( thisModule );
+            failedMessages["module " + this._getModuleNumber(jQuery(thisModule))] = this._readModule( thisModule );
         }
         
         return failedMessages;
     },
-    _readTest: function( failedModule ) {
+    _readModule: function( failedModule ) {
         var failedTests   = jQuery(".qunit-assert-list .fail", failedModule);
         var failedMessages = [];
 
