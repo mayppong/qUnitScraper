@@ -1,4 +1,19 @@
 
+## FEATURES
+
+The plug-in can be run over a qUnit result page to scrape the information into a single object for processing. I created this object specifically so it can be passed back to Selenium.
+
+To-Do:
+[x] collect and return failed modules
+[ ] add flag for selecting success or fail or both
+
+
+## ABOUT
+
+Author:  May Pongpitpitak
+Website: http://www.mayppong.com
+
+
 ## LICENSE
 
 The MIT License (MIT)
