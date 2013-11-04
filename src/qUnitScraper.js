@@ -52,14 +52,13 @@ var qUnitScraper = {
      */
     _readModule: function( failedModule ) {
         var failedTests   = jQuery(".qunit-assert-list .fail", failedModule);
-        var failedMessages = [];
-
-        failedMessages["name"] = jQuery(".module-name", failedModule).html() + ": " + jQuery(".test-name", failedModule).html();
-        failedMessages["tests"] = [];
+        var failedMessages = {
+            "name" : jQuery(".module-name", failedModule).html() + ": " + jQuery(".test-name", failedModule).html(),
+            "tests": []
+        };
         
         var numFailedTests = failedTests.length;
-        for( var testNumber=0; testNumber < numFailedTests; testNumber++ )
-        {
+        for( var testNumber=0; testNumber < numFailedTests; testNumber++ ) {
             var thisTest = failedTests[testNumber];
             failedMessages["tests"].push({
                 "message": jQuery(".test-message", thisTest).html(),
