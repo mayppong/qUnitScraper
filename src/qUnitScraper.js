@@ -5,14 +5,17 @@ var qUnitScraper = {
     /**
      * Start here!
      * This is the first method to invoke to call other method. 
-     * Currently it can only does the call to other methods and doesn't
-     * do any processing here. 
+     * Currently it can only does the call to other methods and doesn't do any processing here. 
+     * It then should return all the failed modules in object format back to caller.
+     *
+     * @params : none
+     * @return : (object) the object listing all the failed modules along with their information
      */
     init: function() {
         // validate page here
         
         var failedMessages = this._readResults();
-        console.log( failedMessages );
+        return( failedMessages );
     },
     /**
      * _readResults create a jQuery object, selecting output listing. 
