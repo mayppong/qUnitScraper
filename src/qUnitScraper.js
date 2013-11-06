@@ -14,8 +14,8 @@ var qUnitScraper = {
     init: function() {
         // validate page here
         
-        var failedMessages = this._readResults();
-        return( failedMessages );
+        var results = this._readResults();
+        return( results );
     },
     /**
      * _readResults create a jQuery object, selecting output listing. 
@@ -28,17 +28,17 @@ var qUnitScraper = {
      * @return : (object) listing all the failed modules along with their information.
      */
     _readResults: function( ) {
-        var failedModules = jQuery("#qunit-tests .fail[id^=qunit-test-output]");
-        var failedMessages = [];
+        var modules = jQuery("#qunit-tests .fail[id^=qunit-test-output]");
+        var moduleResults = [];
         
-        var numFailedModules = failedModules.length;
-        for( var moduleNumber=0; moduleNumber < numFailedModules; moduleNumber++ )
+        var numModules = modules.length;
+        for( var moduleNumber=0; moduleNumber < numModules; moduleNumber++ )
         {
-            var thisModule = failedModules[moduleNumber];
-            failedMessages["module " + this._getModuleNumber(jQuery(thisModule))] = this._readModule( thisModule );
+            var thisModule = modules[moduleNumber];
+            moduleResults["module " + this._getModuleNumber(jQuery(thisModule))] = this._readModule( thisModule );
         }
         
-        return failedMessages;
+        return moduleResults;
     },
     /**
      * This method takes jQuery object of the modules we want to read. 
@@ -50,23 +50,23 @@ var qUnitScraper = {
      * @params : (object) jQuery object of the module we want to read
      * @return : (object) an object with 2 properties, name of test and another object listing the tests
      */
-    _readModule: function( failedModule ) {
-        var failedTests   = jQuery(".qunit-assert-list .fail", failedModule);
-        var failedMessages = {
-            "name" : jQuery(".module-name", failedModule).html() + ": " + jQuery(".test-name", failedModule).html(),
+    _readModule: function( module ) {
+        var tests   = jQuery(".qunit-assert-list .fail", module);
+        var testResults = {
+            "name" : jQuery(".module-name", module).html() + ": " + jQuery(".test-name", module).html(),
             "tests": []
         };
         
-        var numFailedTests = failedTests.length;
-        for( var testNumber=0; testNumber < numFailedTests; testNumber++ ) {
-            var thisTest = failedTests[testNumber];
-            failedMessages["tests"].push({
+        var numTests = tests.length;
+        for( var testNumber=0; testNumber < numTests; testNumber++ ) {
+            var thisTest = tests[testNumber];
+            testResults["tests"].push({
                 "message": jQuery(".test-message", thisTest).html(),
                 "source" : jQuery(".test-source pre", thisTest).html()
             });
         }
         
-        return failedMessages;
+        return testResults;
     },
     /**
      * This one takes a jQuery object of the module we want to find the number.
