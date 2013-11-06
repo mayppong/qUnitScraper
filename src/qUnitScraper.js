@@ -29,7 +29,7 @@ var qUnitScraper = {
      */
     _readResults: function( ) {
         var modules = jQuery("#qunit-tests .fail[id^=qunit-test-output]");
-        var moduleResults = [];
+        var moduleResults = {};
         
         var numModules = modules.length;
         for( var moduleNumber=0; moduleNumber < numModules; moduleNumber++ )
