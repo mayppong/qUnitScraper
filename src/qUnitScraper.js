@@ -14,44 +14,49 @@ var qUnitScraper = {
     init: function() {
         // validate page here
         
-        var results = this._readResults();
+        var results = {
+            "pass" : this._readResults(".pass"),
+            "fail" : this._readResults(".fail")
+        };
         return( results );
     },
     /**
-     * _readResults create a jQuery object, selecting output listing. 
-     * Currently it's looking only for the failed modules, but could be 
-     * extended to specify which to look for.
-     * It calls other methods to get the information it needs and returns an object
+     * _readResults first creates a jQuery object, selecting output listing. 
+     * It then calls _readModule method to get the information it needs about each module and returns an object
      * listing each method indexed by the method number as displayed to user.
      * 
-     * @params : none
+     * @params : (string) selector class name with the dot prefix, it should be either ".pass" or ".fail"
      * @return : (object) listing all the failed modules along with their information.
      */
-    _readResults: function( ) {
-        var modules = jQuery("#qunit-tests .fail[id^=qunit-test-output]");
+    _readResults: function( type ) {
+        var modules = jQuery("[id^=qunit-test-output]");
         var moduleResults = {};
         
         var numModules = modules.length;
-        for( var moduleNumber=0; moduleNumber < numModules; moduleNumber++ )
-        {
+        for( var moduleNumber=0; moduleNumber < numModules; moduleNumber++ ) {
             var thisModule = modules[moduleNumber];
-            moduleResults["module " + this._getModuleNumber(jQuery(thisModule))] = this._readModule( thisModule );
+            if( jQuery(type, thisModule).length == 0 ) {
+                continue;
+            }
+            else {
+                moduleResults["module " + this._getModuleNumber(jQuery(thisModule))] = this._readModule( thisModule, type );
+            }
         }
         
         return moduleResults;
     },
     /**
      * This method takes jQuery object of the modules we want to read. 
-     * It then searches for the assert list result, currently the failed ones.
-     * Like _readResults, it could be extended.
+     * It then searches for the assert list result based on the class type parameter passed (.pass or .fail).
      * The method puts together the list found, builds an object including the name, message and source
      * and returns it.
      * 
-     * @params : (object) jQuery object of the module we want to read
+     * @params : module (object) jQuery object of the module we want to read
+     *           type   (string) selector class name with the dot prefix, it should be either ".pass" or ".fail"
      * @return : (object) an object with 2 properties, name of test and another object listing the tests
      */
-    _readModule: function( module ) {
-        var tests   = jQuery(".qunit-assert-list .fail", module);
+    _readModule: function( module, type ) {
+        var tests   = jQuery(".qunit-assert-list " + type, module);
         var testResults = {
             "name" : jQuery(".module-name", module).html() + ": " + jQuery(".test-name", module).html(),
             "tests": []
