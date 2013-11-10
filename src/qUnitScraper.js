@@ -1,5 +1,5 @@
 /**
- * qUnitScraper object
+ * qUnitScraper
  */
 var qUnitScraper = {
     /**
@@ -22,10 +22,11 @@ var qUnitScraper = {
     },
     /**
      * _readResults first creates a jQuery object, selecting output listing. 
-     * It then calls _readModule method to get the information it needs about each module and returns an object
+     * It then calls _readModule method to get the information it needs about each module 
+     * and returns an object
      * listing each method indexed by the method number as displayed to user.
      * 
-     * @params : (string) selector class name with the dot prefix, it should be either ".pass" or ".fail"
+     * @params : (string) selector class name with the dot prefix, ".pass" or ".fail"
      * @return : (object) listing all the failed modules along with their information.
      */
     _readResults: function( type ) {
@@ -33,38 +34,40 @@ var qUnitScraper = {
         var moduleResults = {};
         
         var numModules = modules.length;
-        for( var moduleNumber=0; moduleNumber < numModules; moduleNumber++ ) {
-            var thisModule = modules[moduleNumber];
+        for( var index=0; index < numModules; index++ ) {
+            var thisModule = modules[index];
             if( jQuery(type, thisModule).length == 0 ) {
                 continue;
             }
             else {
-                moduleResults["module " + this._getModuleNumber(jQuery(thisModule))] = this._readModule( thisModule, type );
+                var moduleNumber = this._getModuleNumber( jQuery(thisModule) );
+                moduleResults["module " + moduleNumber] = this._readModule( thisModule, type );
             }
         }
         
         return moduleResults;
     },
     /**
-     * This method takes jQuery object of the modules we want to read. 
-     * It then searches for the assert list result based on the class type parameter passed (.pass or .fail).
+     * This method takes jQuery object of the modules we want to read. It then searches 
+     * for the assert list result based on the class type parameter passed (.pass or .fail).
      * The method puts together the list found, builds an object including the name, message and source
      * and returns it.
      * 
      * @params : module (object) jQuery object of the module we want to read
-     *           type   (string) selector class name with the dot prefix, it should be either ".pass" or ".fail"
+     *           type   (string) selector class name with the dot prefix, ".pass" or ".fail"
      * @return : (object) an object with 2 properties, name of test and another object listing the tests
      */
     _readModule: function( module, type ) {
         var tests   = jQuery(".qunit-assert-list " + type, module);
         var testResults = {
-            "name" : jQuery(".module-name", module).html() + ": " + jQuery(".test-name", module).html(),
+            "name" : jQuery(".module-name", module).html() + ": "
+                        + jQuery(".test-name", module).html(),
             "tests": []
         };
         
         var numTests = tests.length;
-        for( var testNumber=0; testNumber < numTests; testNumber++ ) {
-            var thisTest = tests[testNumber];
+        for( var index=0; index < numTests; index++ ) {
+            var thisTest = tests[index];
             testResults["tests"].push({
                 "message": jQuery(".test-message", thisTest).html(),
                 "source" : jQuery(".test-source pre", thisTest).html()
