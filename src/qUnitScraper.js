@@ -1,4 +1,6 @@
 /**
+ * May Pongpitpitak
+ * http://www.mayppong.com
  * qUnitScraper
  */
 var qUnitScraper = {
