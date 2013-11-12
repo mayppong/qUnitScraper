@@ -1,4 +1,3 @@
-
 ## FEATURES
 
 The qUnitScraper object can be run over a qUnit result page to scrape the information into a single JSON object for exporting/processing. I created this object specifically so it can be passed back to Selenium.
@@ -9,7 +8,7 @@ The JSON object returns by qUnitScraper has the following format
 <pre>{
 	"pass": {
 		"module #" : {
-			"name" : "..."
+			"name" : "...",
 			"tests": [
 				{
 					"message" : "...",
@@ -28,7 +27,7 @@ The JSON object returns by qUnitScraper has the following format
 
 To-Do: 
 [x] collect and return failed modules  
-[x] add flag for selecting success or fail or both 
+[x] add flag for selecting success or fail
 
 
 ## ABOUT
