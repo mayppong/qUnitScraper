@@ -61,15 +61,15 @@ var qUnitScraper = {
      */
     _readModule: function( module, type ) {
         var tests   = jQuery(".qunit-assert-list " + type, module);
-        var testResults = {
-            "name" : jQuery(".module-name", module).html() + ": "
-                        + jQuery(".test-name", module).html(),
+
+        var testResults = { 
+            "name" :  this._getModuleName( module ) + jQuery(".test-name", module).html(),
             "tests": []
         };
         
         var numTests = tests.length;
         for( var index=0; index < numTests; index++ ) {
-            var thisTest = tests[index];
+            var thisTest = tests[ index ];
             testResults["tests"].push({
                 "message": jQuery(".test-message", thisTest).html(),
                 "source" : jQuery(".test-source pre", thisTest).html()
@@ -79,7 +79,21 @@ var qUnitScraper = {
         return testResults;
     },
     /**
-     * This one takes a jQuery object of the module we want to find the number.
+     * This one takes a jQuery object of the module we want to find the name of.
+     * It looks for an element with a class name ".module-name" inside a parent module element
+     * passed into the function.
+     *
+     * @params : (object) jQuery object of the module element
+     * @return : (str) module name with colon-seperator appended or blank string
+     */
+    _getModuleName: function( module )
+    {
+        var moduleName = jQuery(".module-name", module).html();
+        moduleName = moduleName ? moduleName + ": " : "";
+        return moduleName;
+    },
+    /**
+     * This one takes a jQuery object of the module we want to find the number of.
      * Performs a regex match over the id of the DOM which includes an index at the very end.
      * Lastly, we add 1 to the number since the ID is 0-indexed vs the list display to user is 1-indexed.
      * 
