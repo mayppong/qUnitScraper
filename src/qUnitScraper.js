@@ -24,7 +24,7 @@ var qUnitScraper = {
     },
     /**
      * _readResults first creates a jQuery object, selecting output listing. 
-     * It then calls _readModule method to get the information it needs about each module 
+     * It then calls _readTests method to get the information it needs about each module 
      * and returns an object
      * listing each method indexed by the method number as displayed to user.
      * 
@@ -33,7 +33,7 @@ var qUnitScraper = {
      */
     _readResults: function( type ) {
         var modules = jQuery("[id^=qunit-test-output]");
-        var moduleResults = {};
+        var moduleResults = [];
         
         var numModules = modules.length;
         for( var index=0; index < numModules; index++ ) {
@@ -42,8 +42,13 @@ var qUnitScraper = {
                 continue;
             }
             else {
-                var moduleNumber = this._getModuleNumber( jQuery(thisModule) );
-                moduleResults["module " + moduleNumber] = this._readModule( thisModule, type );
+                moduleResults.push( 
+                    {
+                        "name"   : this._getModuleName( thisModule ),
+                        "number" : this._getModuleNumber( jQuery(thisModule) ),
+                        "tests"  : this._readTests( thisModule, type ) 
+                    }
+                );
             }
         }
         
@@ -59,21 +64,23 @@ var qUnitScraper = {
      *           type   (string) selector class name with the dot prefix, ".pass" or ".fail"
      * @return : (object) an object with 2 properties, name of test and another object listing the tests
      */
-    _readModule: function( module, type ) {
+    _readTests: function( module, type ) {
         var tests   = jQuery(".qunit-assert-list " + type, module);
 
         var testResults = { 
-            "name" :  this._getModuleName( module ) + jQuery(".test-name", module).html(),
-            "tests": []
+            "name"       : jQuery(".test-name", module).html(),
+            "assertions" : []
         };
         
         var numTests = tests.length;
         for( var index=0; index < numTests; index++ ) {
             var thisTest = tests[ index ];
-            testResults["tests"].push({
-                "message": jQuery(".test-message", thisTest).html(),
-                "source" : jQuery(".test-source pre", thisTest).html()
-            });
+            testResults["assertions"].push(
+                {
+                    "message": jQuery(".test-message", thisTest).html(),
+                    "source" : jQuery(".test-source pre", thisTest).html()
+                }
+            );
         }
         
         return testResults;
@@ -89,7 +96,7 @@ var qUnitScraper = {
     _getModuleName: function( module )
     {
         var moduleName = jQuery(".module-name", module).html();
-        moduleName = moduleName ? moduleName + ": " : "";
+        moduleName = moduleName ? moduleName : "";
         return moduleName;
     },
     /**
