@@ -24,26 +24,40 @@ var qUnitScraper = {
     },
     /**
      * _readResults first creates a jQuery object, selecting output listing. 
-     * It then calls _readModule method to get the information it needs about each module 
-     * and returns an object
-     * listing each method indexed by the method number as displayed to user.
+     * It creates a new module with an array of test. It then calls _readTests method to 
+     * get the information it needs about each test.
+     * If the next test is from the same module as the previous test, it adds the test to same
+     * module object instead.
+     * Otherwise, it creates a new module object.
      * 
      * @params : (string) selector class name with the dot prefix, ".pass" or ".fail"
      * @return : (object) listing all the failed modules along with their information.
      */
     _readResults: function( type ) {
-        var modules = jQuery("[id^=qunit-test-output]");
-        var moduleResults = {};
+        var modules       = jQuery("[id^=qunit-test-output]");
+        var moduleResults = [];
         
-        var numModules = modules.length;
+        var numModules    = modules.length;
+        var lastNewModuleIndex = 0;
         for( var index=0; index < numModules; index++ ) {
-            var thisModule = modules[index];
+            var thisModule     = modules[index];
+            var thisModuleName = this._getModuleName( thisModule );
+
             if( jQuery(type, thisModule).length == 0 ) {
                 continue;
             }
+            else if( index > 0 && thisModuleName == moduleResults[lastNewModuleIndex]["name"] ) {
+                moduleResults[ lastNewModuleIndex ][ "tests" ].push( this._readTests(thisModule, type) );
+            }
             else {
-                var moduleNumber = this._getModuleNumber( jQuery(thisModule) );
-                moduleResults["module " + moduleNumber] = this._readModule( thisModule, type );
+                moduleResults.push( 
+                    {
+                        "name"   : thisModuleName,
+                        "number" : this._getModuleNumber( jQuery(thisModule) ),
+                        "tests"  : [ this._readTests( thisModule, type ) ]
+                    }
+                );
+                lastNewModuleIndex = index;
             }
         }
         
@@ -59,21 +73,23 @@ var qUnitScraper = {
      *           type   (string) selector class name with the dot prefix, ".pass" or ".fail"
      * @return : (object) an object with 2 properties, name of test and another object listing the tests
      */
-    _readModule: function( module, type ) {
+    _readTests: function( module, type ) {
         var tests   = jQuery(".qunit-assert-list " + type, module);
 
         var testResults = { 
-            "name" :  this._getModuleName( module ) + jQuery(".test-name", module).html(),
-            "tests": []
+            "name"       : jQuery(".test-name", module).html(),
+            "assertions" : []
         };
         
         var numTests = tests.length;
         for( var index=0; index < numTests; index++ ) {
             var thisTest = tests[ index ];
-            testResults["tests"].push({
-                "message": jQuery(".test-message", thisTest).html(),
-                "source" : jQuery(".test-source pre", thisTest).html()
-            });
+            testResults["assertions"].push(
+                {
+                    "message": jQuery(".test-message", thisTest).html(),
+                    "source" : jQuery(".test-source pre", thisTest).html()
+                }
+            );
         }
         
         return testResults;
@@ -89,7 +105,7 @@ var qUnitScraper = {
     _getModuleName: function( module )
     {
         var moduleName = jQuery(".module-name", module).html();
-        moduleName = moduleName ? moduleName + ": " : "";
+        moduleName     = moduleName ? moduleName : "";
         return moduleName;
     },
     /**
@@ -101,7 +117,7 @@ var qUnitScraper = {
      * @return : (int) module number as display to users
      */
     _getModuleNumber: function( module ) {
-        var id = module.attr( "id" );
+        var id    = module.attr( "id" );
         var match = id.match( /\d+$/ )[0];
         return parseInt( match ) + 1 ;
     }
