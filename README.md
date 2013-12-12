@@ -6,21 +6,29 @@ The way it works is that it looks for ".pass" or ".fail" class that qUnit adds t
 
 The JSON object returns by qUnitScraper has the following format
 <pre>{
-	"pass": {
-		"module #" : {
-			"name" : "...",
-			"tests": [
-				{
-					"message" : "...",
-					"source"  : "..."
-				},
-				{
-					"message" : "...",
-					"source"  : "..."
-				}
-			]
-		}
-	},
+	"pass": [
+		{
+			"module" : {
+				"name"   : "...",
+				"number" : "...",
+				"tests":  [
+					{
+						"name" : "...",
+						"assertions" : [
+							{
+								"message" : "...",
+								"source"  : "..."
+							},
+							{
+								"message" : "...",
+								"source"  : "..."
+							}
+						]
+					}, { ... }
+				]
+			}
+		}, { ... }
+	],
 	"fail": { ... }
 }</pre>
 
