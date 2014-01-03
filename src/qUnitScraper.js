@@ -38,26 +38,25 @@ var qUnitScraper = {
         var moduleResults = [];
         
         var numTests = tests.length;
-        
+
         var lastNewModuleIndex = 0;
         for( var index=0; index < numModules; index++ ) {
             var thisTest     = tests[index];
             var thisModuleName = this._getModuleName( thisTest );
 
-            if( jQuery(type, thisTest).length == 0 ) {
-                continue;
-            }
-            else if( index > 0 && thisModuleName == moduleResults[lastNewModuleIndex]["name"] ) {
-                moduleResults[ lastNewModuleIndex ][ "tests" ].push( this._readTests(thisTest, type) );
-            }
-            else {
-                moduleResults.push( 
-                    {
-                        "name"   : thisModuleName,
-                        "tests"  : [ this._readTests( thisTest, type ) ]
-                    }
-                );
-                lastNewModuleIndex = index;
+            if( jQuery(type, thisTest).length != 0 ) {
+                else if( index > 0 && thisModuleName == moduleResults[lastNewModuleIndex]["name"] ) {
+                    moduleResults[ lastNewModuleIndex ][ "tests" ].push( this._readTests(thisTest, type) );
+                }
+                else {
+                    moduleResults.push( 
+                        {
+                            "name"   : thisModuleName,
+                            "tests"  : [ this._readTests( thisTest, type ) ]
+                        }
+                    );
+                    lastNewModuleIndex = index;
+                }
             }
         }
         
