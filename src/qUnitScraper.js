@@ -53,7 +53,6 @@ var qUnitScraper = {
                 moduleResults.push( 
                     {
                         "name"   : thisModuleName,
-                        "number" : this._getModuleNumber( jQuery(thisModule) ),
                         "tests"  : [ this._readTests( thisModule, type ) ]
                     }
                 );
@@ -116,7 +115,7 @@ var qUnitScraper = {
      * @params : (object) jQuery object of the module element
      * @return : (int) module number as display to users
      */
-    _getModuleNumber: function( module ) {
+    _getTestNumber: function( module ) {
         var id    = module.attr( "id" );
         var match = id.match( /\d+$/ )[0];
         return parseInt( match ) + 1 ;
