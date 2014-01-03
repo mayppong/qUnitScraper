@@ -34,28 +34,26 @@ var qUnitScraper = {
      * @return : (object) listing all the failed modules along with their information.
      */
     _readResults: function( type ) {
-        var tests       = jQuery("[id^=qunit-test-output]");
+        var tests = jQuery("[id^=qunit-test-output]");
         var moduleResults = [];
         
         var numTests = tests.length;
 
-        var lastNewModuleIndex = 0;
-        for( var index=0; index < numModules; index++ ) {
-            var thisTest     = tests[index];
-            var thisModuleName = this._getModuleName( thisTest );
+        for( var index=0; index < numTests; index++ ) {
+            var thisTest = tests[index];
 
             if( jQuery(type, thisTest).length != 0 ) {
-                else if( index > 0 && thisModuleName == moduleResults[lastNewModuleIndex]["name"] ) {
-                    moduleResults[ lastNewModuleIndex ][ "tests" ].push( this._readTests(thisTest, type) );
+                var thisModuleName = this._getModuleName( thisTest );
+                var previousModule = moduleResults[moduleResults.length - 1];
+
+                if( previousModule && thisModuleName == previousModule["name"] ) {
+                    previousModule["tests"].push( this._readTests(thisTest, type) );
                 }
                 else {
-                    moduleResults.push( 
-                        {
-                            "name"   : thisModuleName,
-                            "tests"  : [ this._readTests( thisTest, type ) ]
-                        }
-                    );
-                    lastNewModuleIndex = index;
+                    moduleResults.push({
+                        "name"  : thisModuleName,
+                        "tests" : [ this._readTests( thisTest, type ) ]
+                    });
                 }
             }
         }
