@@ -11,10 +11,10 @@ The JSON object returns by qUnitScraper has the following format
 		{
 			"module" : {
 				"name"   : "...",
-				"number" : "...",
 				"tests":  [
 					{
 						"name" : "...",
+						"number" : "...",
 						"assertions" : [
 							{
 								"message" : "...",
