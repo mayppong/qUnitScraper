@@ -1,0 +1,44 @@
+{
+  "pass": [{ 
+    "name": "Keyboard Events Trapping", 
+    "tests": [{ 
+      "name": "Hit Letter a once",
+      "number": 1,
+      "assertions": [{
+        "message": "Correct key type assigned",
+        "source": null
+      }]
+    }, {
+      "name": "Hit F01 once",
+      "number": 2,
+      "assertions": [{ 
+        "message": "Correct key type assigned",
+        "source": null
+      }, {
+        "message": "Corrent character code converted",
+        "source": null
+      }]
+    }]
+  }],
+  "fail": [{
+    "name": "Keyboard Events Trapping",
+    "tests": [{
+      "name": "Hit Letter a once",
+      "number": 1,
+      "assertions": [{
+        "message": "Corrent character code converted",
+        "source": "    at Object.&lt;anonymous&gt; (file:///Users/mayppong/Google%20Drive/Documents/Projects/jQKeyboardAPI/test/unittest.js:30:2)"
+      }]
+    }, {
+      "name": "Hit CTRL+V",
+      "number": 3,
+      "assertions": [{
+        "message": "Correct key type assigned",
+        "source": "    at Object.&lt;anonymous&gt; (file:///Users/mayppong/Google%20Drive/Documents/Projects/jQKeyboardAPI/test/unittest.js:51:2)"
+      }, {
+        "message": "CTRL key was pressed",
+        "source": "    at Object.&lt;anonymous&gt; (file:///Users/mayppong/Google%20Drive/Documents/Projects/jQKeyboardAPI/test/unittest.js:52:2)"
+      }]
+    }]
+  }]
+}

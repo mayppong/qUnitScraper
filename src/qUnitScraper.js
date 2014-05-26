@@ -10,15 +10,15 @@ var qUnitScraper = {
      * Currently it can only does the call to other methods and doesn't do any processing here. 
      * It then should return all the failed modules in object format back to caller.
      *
-     * @params : none
+     * @params : page     the html document containing the qunit result 
      * @return : (object) the object listing all the failed modules along with their information
      */
-    init: function() {
+    parse: function( page ) {
         // validate page here
         
         var results = {
-            "pass" : this._readResults(".pass"),
-            "fail" : this._readResults(".fail")
+            "pass" : this._readResults(".pass", page),
+            "fail" : this._readResults(".fail", page)
         };
         return( results );
     },
@@ -33,8 +33,8 @@ var qUnitScraper = {
      * @params : (string) selector class name with the dot prefix, ".pass" or ".fail"
      * @return : (object) listing all the failed modules along with their information.
      */
-    _readResults: function( type ) {
-        var tests = jQuery("[id^=qunit-test-output]");
+    _readResults: function( type, scope ) {
+        var tests = jQuery("[id^=qunit-test-output]", scope);
         var moduleResults = [];
         
         var numTests = tests.length;
