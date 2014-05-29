@@ -6,9 +6,8 @@
 var qUnitScraper = {
     /**
      * Start here!
-     * This is the first method to invoke to call other method. 
-     * Currently it can only does the call to other methods and doesn't do any processing here. 
-     * It then should return all the failed modules in object format back to caller.
+     * parse takes your HTML document full or partial, and search qUnit's classes to scrap for 
+     * the test results. It then returns that in JSON format.
      *
      * @params : page     the html document containing the qunit result 
      * @return : (object) the object listing all the failed modules along with their information

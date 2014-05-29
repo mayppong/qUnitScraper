@@ -33,3 +33,7 @@ The JSON object returns by qUnitScraper has the following format
 	"fail": { ... }
 }
 ```
+
+## Testing
+
+The test is set up to grab the data from external document using jQuery.get(). That means most browsers will fail if run locally through the file system. You will need to have a web server set up to be able to run the test correctly.
