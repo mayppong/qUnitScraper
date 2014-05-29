@@ -6,19 +6,18 @@
 var qUnitScraper = {
     /**
      * Start here!
-     * This is the first method to invoke to call other method. 
-     * Currently it can only does the call to other methods and doesn't do any processing here. 
-     * It then should return all the failed modules in object format back to caller.
+     * parse takes your HTML document full or partial, and search qUnit's classes to scrap for 
+     * the test results. It then returns that in JSON format.
      *
-     * @params : none
+     * @params : page     the html document containing the qunit result 
      * @return : (object) the object listing all the failed modules along with their information
      */
-    init: function() {
+    parse: function( page ) {
         // validate page here
         
         var results = {
-            "pass" : this._readResults(".pass"),
-            "fail" : this._readResults(".fail")
+            "pass" : this._readResults(".pass", page),
+            "fail" : this._readResults(".fail", page)
         };
         return( results );
     },
@@ -33,31 +32,28 @@ var qUnitScraper = {
      * @params : (string) selector class name with the dot prefix, ".pass" or ".fail"
      * @return : (object) listing all the failed modules along with their information.
      */
-    _readResults: function( type ) {
-        var modules       = jQuery("[id^=qunit-test-output]");
+    _readResults: function( type, scope ) {
+        var tests = jQuery("[id^=qunit-test-output]", scope);
         var moduleResults = [];
         
-        var numModules    = modules.length;
-        var lastNewModuleIndex = 0;
-        for( var index=0; index < numModules; index++ ) {
-            var thisModule     = modules[index];
-            var thisModuleName = this._getModuleName( thisModule );
+        var numTests = tests.length;
 
-            if( jQuery(type, thisModule).length == 0 ) {
-                continue;
-            }
-            else if( index > 0 && thisModuleName == moduleResults[lastNewModuleIndex]["name"] ) {
-                moduleResults[ lastNewModuleIndex ][ "tests" ].push( this._readTests(thisModule, type) );
-            }
-            else {
-                moduleResults.push( 
-                    {
-                        "name"   : thisModuleName,
-                        "number" : this._getModuleNumber( jQuery(thisModule) ),
-                        "tests"  : [ this._readTests( thisModule, type ) ]
-                    }
-                );
-                lastNewModuleIndex = index;
+        for( var index=0; index < numTests; index++ ) {
+            var thisTest = tests[index];
+
+            if( jQuery(type, thisTest).length != 0 ) {
+                var thisModuleName = this._getModuleName( thisTest );
+                var previousModule = moduleResults[moduleResults.length - 1];
+
+                if( previousModule && thisModuleName == previousModule["name"] ) {
+                    previousModule["tests"].push( this._readTests(thisTest, type) );
+                }
+                else {
+                    moduleResults.push({
+                        "name"  : thisModuleName,
+                        "tests" : [ this._readTests( thisTest, type ) ]
+                    });
+                }
             }
         }
         
@@ -78,6 +74,7 @@ var qUnitScraper = {
 
         var testResults = { 
             "name"       : jQuery(".test-name", module).html(),
+            "number"     : this._getTestNumber( module ),
             "assertions" : []
         };
         
@@ -116,7 +113,8 @@ var qUnitScraper = {
      * @params : (object) jQuery object of the module element
      * @return : (int) module number as display to users
      */
-    _getModuleNumber: function( module ) {
+    _getTestNumber: function( module ) {
+        var module = jQuery(module);
         var id    = module.attr( "id" );
         var match = id.match( /\d+$/ )[0];
         return parseInt( match ) + 1 ;
